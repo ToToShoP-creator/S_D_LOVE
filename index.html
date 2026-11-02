@@ -21,7 +21,7 @@
                             cyan: '#00f0ff',
                             pink: '#ff0055',
                             yellow: '#f3e600',
-                            text: '#f3f4f6' // Чистий білий/світло-сірий текст
+                            text: '#f3f4f6'
                         }
                     },
                     fontFamily: {
@@ -52,7 +52,6 @@
             text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
         }
         
-        /* Анімації в стилі Метро 2030 / Кіберпанк */
         @keyframes terminalFlicker {
             0% { opacity: 0.97; }
             50% { opacity: 1; }
@@ -65,17 +64,11 @@
             0% { transform: translateY(-100%); }
             100% { transform: translateY(1000%); }
         }
-        @keyframes glitchPulse {
-            0% { text-shadow: 2px 0 #ff0055, -2px 0 #00ff66; }
-            50% { text-shadow: -2px 0 #ff0055, 2px 0 #00ff66; }
-            100% { text-shadow: 2px 0 #ff0055, -2px 0 #00ff66; }
-        }
 
         body {
             animation: terminalFlicker 0.15s infinite;
         }
 
-        /* Рухома лінія сканування (Метро 2030 стилістика) */
         .scanline-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -115,6 +108,7 @@
             text-transform: uppercase;
             position: relative;
             text-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
+            cursor: pointer;
         }
         .cyber-btn:hover {
             background: rgba(0, 255, 102, 0.15);
@@ -133,7 +127,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
         }
 
-        /* Ефект старої ЕЛТ-телевзійної сітки */
         body::after {
             content: " ";
             display: block;
@@ -164,7 +157,7 @@
             <div class="hidden sm:block text-gray-300">AI ASSISTANT: <span id="ai-status-text" class="text-cyber-green font-bold">ONLINE</span></div>
             <div class="cyber-box px-3 py-1 flex items-center gap-2">
                 <span class="text-cyber-yellow">MODE:</span>
-                <button onclick="toggleUserMode()" id="mode-toggle-btn" class="text-cyber-green font-bold hover:underline">ПОВНИЙ ПРОТОКОЛ</button>
+                <button onclick="toggleUserMode()" id="mode-toggle-btn" class="text-cyber-green font-bold hover:underline cursor-pointer">ПОВНИЙ ПРОТОКОЛ</button>
             </div>
             <div class="cyber-box px-3 py-1 text-cyber-green">
                 METRO_NET: <span class="text-white">SECURE</span>
@@ -178,20 +171,20 @@
         <!-- SIDEBAR NAVIGATION -->
         <aside class="w-full md:w-64 border-r border-cyber-border bg-cyber-dark p-4 flex flex-col gap-2">
             <div class="text-xs text-gray-400 mb-2">// НАВІГАЦІЯ ТЕРМІНАЛУ</div>
-            <button onclick="switchTab('dashboard')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-white font-bold bg-cyber-card border-l-4 border-l-cyber-green text-cyber-green">01. ДАСХБОРД</button>
-            <button onclick="switchTab('transactions')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">02. ТРАНЗАКЦІЇ & ПЕРЕКАЗИ</button>
-            <button onclick="switchTab('debts')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">03. КРЕДИТИ ТА БОРГИ</button>
-            <button onclick="switchTab('budgets')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">04. БЮДЖЕТНІ ЛІМІТИ</button>
-            <button onclick="switchTab('goals')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">05. КІБЕР-ЦІЛІ</button>
-            <button onclick="switchTab('templates')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">06. ШАБЛОНИ ПЛАТЕЖІВ</button>
-            <button onclick="switchTab('accounts')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-gray-100">07. РАХУНКИ ТА КАТЕГОРІЇ</button>
-            <button onclick="switchTab('analytics')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-gray-100">08. АНАЛІТИКА ТА ЗВІТИ</button>
-            <button onclick="switchTab('calendar')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-gray-100">09. КАЛЕНДАР ПОДІЙ</button>
+            <button onclick="switchTab('dashboard', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-white font-bold bg-cyber-card border-l-4 border-l-cyber-green text-cyber-green">01. ДАСХБОРД</button>
+            <button onclick="switchTab('transactions', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">02. ТРАНЗАКЦІЇ & ПЕРЕКАЗИ</button>
+            <button onclick="switchTab('debts', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">03. КРЕДИТИ ТА БОРГИ</button>
+            <button onclick="switchTab('budgets', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">04. БЮДЖЕТНІ ЛІМІТИ</button>
+            <button onclick="switchTab('goals', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">05. КІБЕР-ЦІЛІ</button>
+            <button onclick="switchTab('templates', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-cyber-green">06. ШАБЛОНИ ПЛАТЕЖІВ</button>
+            <button onclick="switchTab('accounts', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-gray-100">07. РАХУНКИ ТА КАТЕГОРІЇ</button>
+            <button onclick="switchTab('analytics', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-gray-100">08. АНАЛІТИКА ТА ЗВІТИ</button>
+            <button onclick="switchTab('calendar', this)" class="nav-btn w-full text-left px-3 py-2 cyber-box text-gray-300 hover:text-gray-100">09. КАЛЕНДАР ПОДІЙ</button>
             
             <div class="mt-auto pt-4 border-t border-cyber-border text-[11px] text-gray-400">
                 <p>БАЗА ДАНИХ: <span class="text-cyber-green">LOCALSTORAGE [SYNCED]</span></p>
                 <button onclick="exportData()" class="mt-2 w-full text-center py-1 cyber-btn text-xs">ЕКСПОРТ ДАНИХ</button>
-                <button onclick="resetData()" class="mt-1 w-full text-center py-1 text-[10px] text-red-400 hover:underline">СКИНУТИ ДО 0</button>
+                <button onclick="resetData()" class="mt-1 w-full text-center py-1 text-[10px] text-red-400 hover:underline cursor-pointer">СКИНУТИ ДО 0</button>
             </div>
         </aside>
 
@@ -659,23 +652,26 @@
             const aiText = document.getElementById('ai-advice-text');
             if (appState.userMode === 'novice') {
                 btn.textContent = 'РЕЖИМ НОВАЧКА';
-                aiText.textContent = '[AI SYSTEM]: Система активана. Усі баланси 0. Додайте свій перший рахунок!';
+                aiText.textContent = '[AI SYSTEM]: Система активована. Усі баланси 0. Додайте свій перший рахунок!';
             } else {
                 btn.textContent = 'ПОВНИЙ ПРОТОКОЛ';
                 aiText.textContent = '[AI ADVISOR]: Повний протокол активовано. Готові до роботи.';
             }
         }
 
-        function switchTab(tabId) {
+        function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.remove('hidden');
             
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-cyber-card', 'border-l-4', 'border-l-cyber-green', 'text-cyber-green', 'font-bold');
                 btn.classList.add('text-gray-300');
             });
-            event.currentTarget.classList.add('bg-cyber-card', 'border-l-4', 'border-l-cyber-green', 'text-cyber-green', 'font-bold');
-            event.currentTarget.classList.remove('text-gray-300');
+            if (btnElement) {
+                btnElement.classList.add('bg-cyber-card', 'border-l-4', 'border-l-cyber-green', 'text-cyber-green', 'font-bold');
+                btnElement.classList.remove('text-gray-300');
+            }
 
             if (tabId === 'analytics') renderCharts();
             if (tabId === 'calendar') renderCalendar();
@@ -826,7 +822,7 @@
             e.preventDefault();
             const fromAccId = document.getElementById('tr-from-acc').value;
             const toAccId = document.getElementById('tr-to-acc').value;
-            if (!fromAccId || !toAccId || fromAccId === toAccId) { alert перевірте рахунки!; return; }
+            if (!fromAccId || !toAccId || fromAccId === toAccId) { alert('Перевірте правильність рахунків для переказу!'); return; }
             const amount = Number(document.getElementById('tr-amount').value);
             const convertedAmount = Number(document.getElementById('tr-converted-amount').value) || amount;
             
@@ -871,7 +867,7 @@
                         <td class="p-2 text-gray-400">${t.location || '—'}</td>
                         <td class="p-2 text-gray-300">${t.note || '—'}</td>
                         <td class="p-2 text-right">
-                            <button onclick="deleteTransaction('${t.id}')" class="text-cyber-pink hover:underline">[ВИДАЛИТИ]</button>
+                            <button onclick="deleteTransaction('${t.id}')" class="text-cyber-pink hover:underline cursor-pointer">[ВИДАЛИТИ]</button>
                         </td>
                     </tr>
                 `;
@@ -920,8 +916,8 @@
                     <td class="p-2 text-gray-300">${d.deadline || '—'}</td>
                     <td class="p-2 text-gray-300">${d.note || '—'}</td>
                     <td class="p-2 text-right">
-                        ${d.status === 'active' ? `<button onclick="resolveDebt('${d.id}')" class="text-cyber-green hover:underline">[ПОГАСТИТИ]</button>` : ''}
-                        <button onclick="deleteDebt('${d.id}')" class="text-cyber-pink hover:underline ml-2">[ВИДАЛИТИ]</button>
+                        ${d.status === 'active' ? `<button onclick="resolveDebt('${d.id}')" class="text-cyber-green hover:underline cursor-pointer">[ПОГАСТИТИ]</button>` : ''}
+                        <button onclick="deleteDebt('${d.id}')" class="text-cyber-pink hover:underline ml-2 cursor-pointer">[ВИДАЛИТИ]</button>
                     </td>
                 </tr>
             `).join('');
@@ -999,7 +995,7 @@
                     <div class="cyber-box p-4 space-y-3">
                         <div class="flex justify-between items-center">
                             <div class="font-bold text-white text-sm">${g.name}</div>
-                            <button onclick="deleteGoal('${g.id}')" class="text-cyber-pink text-xs">[ВИДАЛИТИ]</button>
+                            <button onclick="deleteGoal('${g.id}')" class="text-cyber-pink text-xs cursor-pointer">[ВИДАЛИТИ]</button>
                         </div>
                         <div class="text-xs text-gray-300">НАКОПИЧЕНО: <span class="text-cyber-green font-bold neon-glow-green">${g.current}</span> / ${g.target} UAH (${percent}%)</div>
                         <div class="w-full bg-cyber-dark h-2 rounded overflow-hidden border border-cyber-border">
@@ -1055,7 +1051,7 @@
                     </div>
                     <div class="flex gap-2">
                         <button onclick="applyTemplate('${tp.id}')" class="cyber-btn px-3 py-1 text-xs">ВИКОНАТИ</button>
-                        <button onclick="deleteTemplate('${tp.id}')" class="text-cyber-pink text-xs">[X]</button>
+                        <button onclick="deleteTemplate('${tp.id}')" class="text-cyber-pink text-xs cursor-pointer">[X]</button>
                     </div>
                 </div>
             `).join('');
