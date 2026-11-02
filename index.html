@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCRP-FINANCE // Cyber Terminal OS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#05050a',
+                            dark: '#0a0b10',
+                            card: '#10121d',
+                            border: '#1f243d',
+                            green: '#00ff66',
+                            cyan: '#00f0ff',
+                            pink: '#ff0055',
+                            yellow: '#f3e600',
+                            text: '#c0c5d0'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"Share Tech Mono"', '"Courier New"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Share Tech Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Chart.js для аналітики -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #05050a;
+            color: #c0c5d0;
+            overflow-x: hidden;
+        }
+        .neon-glow-green {
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
+        }
+        .neon-glow-cyan {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
+        .neon-glow-pink {
+            text-shadow: 0 0 8px rgba(255, 0, 85, 0.6);
+        }
+        .cyber-box {
+            background: #10121d;
+            border: 1px solid #1f243d;
+            position: relative;
+        }
+        .cyber-box::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            border-width: 0 10px 10px 0;
+            border-style: solid;
+            border-color: #00f0ff #05050a;
+            display: block;
+            width: 0;
+        }
+        .cyber-btn {
+            background: transparent;
+            border: 1px solid #00f0ff;
+            color: #00f0ff;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            position: relative;
+        }
+        .cyber-btn:hover {
+            background: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+        }
+        .cyber-input {
+            background: #05050a;
+            border: 1px solid #1f243d;
+            color: #00ff66;
+        }
+        .cyber-input:focus {
+            outline: none;
+            border-color: #00ff66;
+            box-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+        }
+        /* Scanline effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 99999;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #05050a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f243d;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+    </style>
+</head>
+<body class="min-h- повнеflex flex-col">
+
+    <!-- HEADER / SYSTEM STATUS BAR -->
+    <header class="border-b border-cyber-border bg-cyber-dark/80 backdrop-blur sticky top-0 z-50 px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 bg-cyber-green animate-ping rounded-full"></div>
+            <h1 class="text-xl font-bold tracking-wider text-cyber-cyan neon-glow-cyan">// SCRP-FINANCE_OS v2.6</h1>
+        </div>
+        <div class="flex items-center gap-4 text-xs">
+            <div class="hidden sm:block text-cyber-text">AI ASSISTANT: <span id="ai-status-text" class="text-cyber-green">ONLINE</span></div>
+            <div class="cyber-box px-3 py-1 flex items-center gap-2">
+                <span class="text-cyber-yellow">MODE:</span>
+                <button onclick="toggleUserMode()" id="mode-toggle-btn" class="text-cyber-cyan font-bold hover:underline">ПОВНИЙ ПРОТОКОЛ</button>
+            </div>
+            <div class="cyber-box px-3 py-1 text-cyber-green">
+                NET: SECURE // 2026.11.02
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="flex flex-1 flex-col md:flex-row">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-full md:w-64 border-r border-cyber-border bg-cyber-dark p-4 flex flex-col gap-2">
+            <div class="text-xs text-cyber-text mb-2">// НАВІГАЦІЯ ТЕРМІНАЛУ</div>
+            <button onclick="switchTab('dashboard')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-cyan font-bold bg-cyber-card border-l-4 border-l-cyber-cyan">01. ДАСХБОРД</button>
+            <button onclick="switchTab('transactions')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">02. ТРАНЗАКЦІЇ & ПЕРЕКАЗИ</button>
+            <button onclick="switchTab('debts')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">03. КРЕДИТИ ТА БОРГИ</button>
+            <button onclick="switchTab('budgets')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">04. БЮДЖЕТНІ ЛІМІТИ</button>
+            <button onclick="switchTab('goals')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">05. КІБЕР-ЦІЛІ</button>
+            <button onclick="switchTab('templates')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">06. ШАБЛОНИ ПЛАТЕЖІВ</button>
+            <button onclick="switchTab('accounts')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">07. РАХУНКИ ТА КАТЕГОРІЇ</button>
+            <button onclick="switchTab('analytics')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">08. АНАЛІТИКА ТА ЗВІТИ</button>
+            <button onclick="switchTab('calendar')" class="nav-btn w-full text-left px-3 py-2 cyber-box text-cyber-text hover:text-cyber-green">09. КАЛЕНДАР ПОДІЙ</button>
+            
+            <div class="mt-auto pt-4 border-t border-cyber-border text-[11px] text-cyber-text">
+                <p>БАЗА ДАНИХ: <span class="text-cyber-green">LOCALSTORAGE [SYNCED]</span></p>
+                <button onclick="exportData()" class="mt-2 w-full text-center py-1 cyber-btn text-xs">ЕКСПОРТ ДАНИХ</button>
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 p-4 md:p-6 overflow-y-auto">
+            
+            <!-- AI ADVISOR BANNER -->
+            <div id="ai-banner" class="cyber-box p-4 mb-6 border-l-4 border-l-cyber-green bg-cyber-card flex items-start gap-4">
+                <div class="text-2xl text-cyber-green">🤖</div>
+                <div class="flex-1">
+                    <div class="text-xs font-bold text-cyber-green tracking-widest">[AI_SYSTEM_ADVISOR]</div>
+                    <p id="ai-advice-text" class="text-sm mt-1 text-cyber-text">Аналіз лімітів активний. Всі системи функціонують у штатному режимі. Проводьте операції без перевантаження мережі.</p>
+                </div>
+            </div>
+
+            <!-- TABS CONTENT -->
+            
+            <!-- 01. DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="cyber-box p-4">
+                        <div class="text-xs text-cyber-text">ЗАГАЛЬНИЙ БАЛАНС</div>
+                        <div id="dash-total-balance" class="text-2xl font-bold text-cyber-cyan mt-1 neon-glow-cyan">0.00 UAH</div>
+                    </div>
+                    <div class="cyber-box p-4">
+                        <div class="text-xs text-cyber-text">ДОХОДИ (МІСЯЦЬ)</div>
+                        <div id="dash-monthly-income" class="text-2xl font-bold text-cyber-green mt-1 neon-glow-green">0.00 UAH</div>
+                    </div>
+                    <div class="cyber-box p-4">
+                        <div class="text-xs text-cyber-text">ВИТРАТИ (МІСЯЦЬ)</div>
+                        <div id="dash-monthly-expense" class="text-2xl font-bold text-cyber-pink mt-1 neon-glow-pink">0.00 UAH</div>
+                    </div>
+                    <div class="cyber-box p-4">
+                        <div class="text-xs text-cyber-text">АКТИВНІ ЦІЛІ</div>
+                        <div id="dash-active-goals" class="text-2xl font-bold text-cyber-yellow mt-1">0 / 0</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="cyber-box p-4">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// ШВИДКЕ ДОДАВАННЯ ТРАНЗАКЦІЇ</div>
+                        <form onsubmit="handleQuickTransaction(event)" class="space-y-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-xs text-cyber-text">ТИП</label>
+                                    <select id="q-type" class="cyber-input w-full p-2 text-sm mt-1">
+                                        <option value="expense">ВИТРАТА</option>
+                                        <option value="income">ДОХІД</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-cyber-text">СУМА</label>
+                                    <input type="number" step="0.01" id="q-amount" required placeholder="0.00" class="cyber-input w-full p-2 text-sm mt-1">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-xs text-cyber-text">РАХУНОК</label>
+                                    <select id="q-account" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-cyber-text">КАТЕГОРІЯ</label>
+                                    <select id="q-category" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ЛОКАЦІЯ / СЕГМЕНТ МІСТА (ГЕО)</label>
+                                <input type="text" id="q-location" placeholder="Напр. Дубно, Центр / Сектор 7" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ПРИМІТКА</label>
+                                <input type="text" id="q-note" placeholder="Опис операції..." class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <button type="submit" class="cyber-btn w-full py-2 font-bold text-sm">ВИКОНАТИ ТРАНЗАКЦІЮ</button>
+                        </form>
+                    </div>
+
+                    <div class="cyber-box p-4 flex flex-col">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// ОСТАННІ ОПЕРАЦІЇ</div>
+                        <div id="dash-recent-list" class="space-y-2 flex-1 overflow-y-auto max-h-[300px]">
+                            <!-- Динамічний список -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 02. TRANSACTIONS & TRANSFERS -->
+            <div id="tab-transactions" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="cyber-box p-4 lg:col-span-1 space-y-4">
+                        <div class="text-sm font-bold text-cyber-cyan">// НОВА ОПЕРАЦІЯ / ПЕРЕКАЗ / ОБМІН</div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="setTxMode('trans')" id="mode-trans-btn" class="flex-1 py-1 text-xs cyber-btn bg-cyber-card border-cyber-cyan text-cyber-cyan">ТРАНЗАКЦІЯ</button>
+                            <button type="button" onclick="setTxMode('transfer')" id="mode-transfer-btn" class="flex-1 py-1 text-xs cyber-btn text-cyber-text">ПЕРЕКАЗ / ОБМІН</button>
+                        </div>
+                        
+                        <!-- Форма транзакції -->
+                        <form id="form-standard-tx" onsubmit="handleStandardTransaction(event)" class="space-y-3">
+                            <div>
+                                <label class="text-xs text-cyber-text">ТИП</label>
+                                <select id="st-type" class="cyber-input w-full p-2 text-sm mt-1">
+                                    <option value="expense">ВИТРАТА</option>
+                                    <option value="income">ДОХІД</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">СУМА</label>
+                                <input type="number" step="0.01" id="st-amount" required class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">РАХУНОК</label>
+                                <select id="st-account" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">КАТЕГОРІЯ</label>
+                                <select id="st-category" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ДАТА ТА ЧАС</label>
+                                <input type="datetime-local" id="st-date" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ЛОКАЦІЯ / ГЕО</label>
+                                <input type="text" id="st-location" placeholder="Місто / Район" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ТЕГИ / МІТКИ</label>
+                                <input type="text" id="st-tags" placeholder="тег1, тег2" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ПРИМІТКА</label>
+                                <input type="text" id="st-note" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <button type="submit" class="cyber-btn w-full py-2 font-bold text-sm">ДОДАТИ ЗАПИС</button>
+                        </form>
+
+                        <!-- Форма переказу / обміну валют -->
+                        <form id="form-transfer-tx" onsubmit="handleTransferTransaction(event)" class="space-y-3 hidden">
+                            <div>
+                                <label class="text-xs text-cyber-text">РАХУНОК ВІДПРАВНИК (ДЖЕРЕЛО)</label>
+                                <select id="tr-from-acc" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">РАХУНОК ОТРИМУВАЧ (ПРИЗНАЧЕННЯ)</label>
+                                <select id="tr-to-acc" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">СУМА СПИСАННЯ</label>
+                                <input type="number" step="0.01" id="tr-amount" required class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">КУРС ОБМІНУ / СУМА ОТРИМАННЯ (якщо різна валюта)</label>
+                                <input type="number" step="0.01" id="tr-converted-amount" placeholder="Залиште порожнім, якщо 1:1" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ПРИМІТКА</label>
+                                <input type="text" id="tr-note" placeholder="Обмін валюти / Переказ" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <button type="submit" class="cyber-btn w-full py-2 font-bold text-sm">ВИКОНАТИ ПЕРЕКАЗ</button>
+                        </form>
+                    </div>
+
+                    <div class="cyber-box p-4 lg:col-span-2 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-sm font-bold text-cyber-cyan">// ЖУРНАЛ ВСІХ ТРАНЗАКЦІЙ</div>
+                            <div class="flex gap-2">
+                                <input type="text" id="tx-search" oninput="renderTransactionsTable()" placeholder="Пошук..." class="cyber-input px-2 py-1 text-xs">
+                                <select id="tx-filter-type" onchange="renderTransactionsTable()" class="cyber-input px-2 py-1 text-xs">
+                                    <option value="all">УСІ</option>
+                                    <option value="expense">ВИТРАТИ</option>
+                                    <option value="income">ДОХОДИ</option>
+                                    <option value="transfer">ПЕРЕКАЗИ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto flex-1">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="border-b border-cyber-border text-cyber-text">
+                                        <th class="p-2">ДАТА</th>
+                                        <th class="p-2">ТИП</th>
+                                        <th class="p-2">СУМА</th>
+                                        <th class="p-2">РАХУНОК / КАТЕГОРІЯ</th>
+                                        <th class="p-2">ЛОКАЦІЯ</th>
+                                        <th class="p-2">ОПИС</th>
+                                        <th class="p-2 text-right">ДІЇ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactions-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 03. DEBTS & BORROWINGS -->
+            <div id="tab-debts" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="cyber-box p-4 lg:col-span-1">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// ДОДАТИ ВЗАЄМОРОЗРАХУНОК</div>
+                        <form onsubmit="handleDebtSubmit(event)" class="space-y-3">
+                            <div>
+                                <label class="text-xs text-cyber-text">ТИП БОРГУ</label>
+                                <select id="debt-type" class="cyber-input w-full p-2 text-sm mt-1">
+                                    <option value="lent">МЕНІ ВИННІ (НАДАВ ПОЗИКУ)</option>
+                                    <option value="borrowed">Я ВИНЕН (ВЗЯВ ПОЗИКУ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">КОНТРАГЕНТ</label>
+                                <input type="text" id="debt-counterparty" required placeholder="Ім'я контрагента / агента" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">СУМА</label>
+                                <input type="number" step="0.01" id="debt-amount" required class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ВАЛЮТА / РАХУНОК</label>
+                                <select id="debt-account" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ДАТА ПОВЕРНЕННЯ (ДЕДЛАЙН)</label>
+                                <input type="date" id="debt-deadline" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ПРИМІТКА</label>
+                                <input type="text" id="debt-note" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <button type="submit" class="cyber-btn w-full py-2 font-bold text-sm">ЗАРЕЄСТРУВАТИ БОРГ</button>
+                        </form>
+                    </div>
+
+                    <div class="cyber-box p-4 lg:col-span-2 flex flex-col">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// РЕЄСТР КОНТРАГЕНТІВ ТА БОРГІВ</div>
+                        <div class="overflow-x-auto flex-1">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="border-b border-cyber-border text-cyber-text">
+                                        <th class="p-2">СТАТУС</th>
+                                        <th class="p-2">КОНТРАГЕНТ</th>
+                                        <th class="p-2">СУМА</th>
+                                        <th class="p-2">ДЕДЛАЙН</th>
+                                        <th class="p-2">ПРИМІТКА</th>
+                                        <th class="p-2 text-right">ДІЇ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="debts-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 04. BUDGET LIMITS -->
+            <div id="tab-budgets" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="cyber-box p-4 lg:col-span-1">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// ВСТАНОВИТИ ЛІМІТ КАТЕГОРІЇ</div>
+                        <form onsubmit="handleBudgetSubmit(event)" class="space-y-3">
+                            <div>
+                                <label class="text-xs text-cyber-text">КАТЕГОРІЯ ВИТРАТ</label>
+                                <select id="budget-category" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ЛІМІТ СУМИ (НА МІСЯЦЬ)</label>
+                                <input type="number" step="0.01" id="budget-limit" required class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <button type="submit" class="cyber-btn w-full py-2 font-bold text-sm">ЗБЕРЕГТИ ЛІМІТ</button>
+                        </form>
+                    </div>
+
+                    <div class="cyber-box p-4 lg:col-span-2">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// МОНІТОРИНГ БЮДЖЕТНИХ ЛІМІТІВ</div>
+                        <div id="budgets-list-container" class="space-y-4">
+                            <!-- Динамічні шкали -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 05. FINANCIAL GOALS -->
+            <div id="tab-goals" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="cyber-box p-4 lg:col-span-1">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// СТВОРИТИ КІБЕР-ЦІЛЬ</div>
+                        <form onsubmit="handleGoalSubmit(event)" class="space-y-3">
+                            <div>
+                                <label class="text-xs text-cyber-text">НАЗВА ЦІЛІ</label>
+                                <input type="text" id="goal-name" required placeholder="Кібер-імпланти / Байк" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ЦІЛЬОВА СУМА</label>
+                                <input type="number" step="0.01" id="goal-target" required class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ВЖЕ НАКОПИЧЕНО</label>
+                                <input type="number" step="0.01" id="goal-current" value="0" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ЦІЛЬОВА ДАТА</label>
+                                <input type="date" id="goal-date" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <button type="submit" class="cyber-btn w-full py-2 font-bold text-sm">АКТИВУВАТИ ЦІЛЬ</button>
+                        </form>
+                    </div>
+
+                    <div class="cyber-box p-4 lg:col-span-2">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// ПРОГРЕС НАКОПИЧЕНЬ</div>
+                        <div id="goals-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Динамічні цілі -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 06. TRANSACTION TEMPLATES -->
+            <div id="tab-templates" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="cyber-box p-4 lg:col-span-1">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// СТВОРИТИ ОПЕРАЦІЙНИЙ ШАБЛОН</div>
+                        <form onsubmit="handleTemplateSubmit(event)" class="space-y-3">
+                            <div>
+                                <label class="text-xs text-cyber-text">НАЗВА ШАБЛОНУ</label>
+                                <input type="text" id="tmpl-name" required placeholder="Оплата кібер-мережі" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ТИП</label>
+                                <select id="tmpl-type" class="cyber-input w-full p-2 text-sm mt-1">
+                                    <option value="expense">ВИТРАТА</option>
+                                    <option value="income">ДОХІД</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">СУМА</label>
+                                <input type="number" step="0.01" id="tmpl-amount" required class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">РАХУНОК</label>
+                                <select id="tmpl-account" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">КАТЕГОРІЯ</label>
+                                <select id="tmpl-category" class="cyber-input w-full p-2 text-sm mt-1"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-cyber-text">ПРИМІТКА</label>
+                                <input type="text" id="tmpl-note" class="cyber-input w-full p-2 text-sm mt-1">
+                            </div>
+                            <button type="submit" class="cyber-btn w-full py-2 font-bold text-sm">ЗБЕРЕГТИ ШАБЛОН</button>
+                        </form>
+                    </div>
+
+                    <div class="cyber-box p-4 lg:col-span-2">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// ШВИДКІ ШАБЛОНИ (В ОДИН КЛІК)</div>
+                        <div id="templates-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Динамічні шаблони -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 07. ACCOUNTS & CATEGORIES -->
+            <div id="tab-accounts" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Рахунки -->
+                    <div class="cyber-box p-4 space-y-4">
+                        <div class="text-sm font-bold text-cyber-cyan">// КЕРУВАННЯ РАХУНКАМИ</div>
+                        <form onsubmit="handleAccountSubmit(event)" class="flex gap-2">
+                            <input type="text" id="acc-name" required placeholder="Назва рахунку (Готівка, Crypto...)" class="cyber-input flex-1 p-2 text-sm">
+                            <input type="number" step="0.01" id="acc-balance" placeholder="Початковий баланс" class="cyber-input w-32 p-2 text-sm">
+                            <button type="submit" class="cyber-btn px-4 py-2 text-sm font-bold">+</button>
+                        </form>
+                        <div id="accounts-list" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Категорії -->
+                    <div class="cyber-box p-4 space-y-4">
+                        <div class="text-sm font-bold text-cyber-cyan">// КЕРУВАННЯ КАТЕГОРІЯМИ</div>
+                        <form onsubmit="handleCategorySubmit(event)" class="flex gap-2">
+                            <input type="text" id="cat-name" required placeholder="Назва категорії" class="cyber-input flex-1 p-2 text-sm">
+                            <select id="cat-type" class="cyber-input p-2 text-sm">
+                                <option value="expense">ВИТРАТА</option>
+                                <option value="income">ДОХІД</option>
+                            </select>
+                            <button type="submit" class="cyber-btn px-4 py-2 text-sm font-bold">+</button>
+                        </form>
+                        <div id="categories-list" class="space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 08. ANALYTICS & REPORTS -->
+            <div id="tab-analytics" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="cyber-box p-4">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// РОЗПОДІЛ ВИТРАТ ЗА КАТЕГОРІЯМИ</div>
+                        <div class="w-full h-64 flex justify-center items-center">
+                            <canvas id="expenseChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="cyber-box p-4">
+                        <div class="text-sm font-bold text-cyber-cyan mb-4">// ДИНАМІКА БАЛАНСУ ТА ПОТКІВ</div>
+                        <div class="w-full h-64 flex justify-center items-center">
+                            <canvas id="balanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 09. TRANSACTION CALENDAR -->
+            <div id="tab-calendar" class="tab-content hidden space-y-6">
+                <div class="cyber-box p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="text-sm font-bold text-cyber-cyan" id="calendar-month-title">// КАЛЕНДАР ОПЕРАЦІЙ</div>
+                        <div class="flex gap-2">
+                            <button onclick="changeMonth(-1)" class="cyber-btn px-3 py-1 text-xs"><</button>
+                            <button onclick="changeMonth(1)" class="cyber-btn px-3 py-1 text-xs">></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 text-center text-xs text-cyber-text mb-2">
+                        <div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div>СБ</div><div>НД</div>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // Ініціалізація даних та стану
+        let appState = JSON.parse(localStorage.getItem('scrp_finance_state')) || {
+            userMode: 'full', // 'novice' або 'full'
+            accounts: [
+                { id: 'acc_1', name: 'Готівка (Кібер-гаманець)', balance: 4500 },
+                { id: 'acc_2', name: 'Крипто-гаманець (USDT/BTC)', balance: 12800 },
+                { id: 'acc_3', name: 'Корпоративна Карта', balance: 24500 }
+            ],
+            categories: [
+                { id: 'cat_1', name: 'Кібернетика & Імпланти', type: 'expense' },
+                { id: 'cat_2', name: 'Енергоживлення & Мережа', type: 'expense' },
+                { id: 'cat_3', name: 'Їжа та Синт-продукти', type: 'expense' },
+                { id: 'cat_4', name: 'Зарплата / Заробіток', type: 'income' },
+                { id: 'cat_5', name: 'Фріланс & IT Код', type: 'income' }
+            ],
+            transactions: [],
+            debts: [],
+            budgets: [],
+            goals: [
+                { id: 'g_1', name: 'Кібер-імплант зору v2', target: 35000, current: 15000, date: '2026-12-31' },
+                { id: 'g_2', name: 'Залізячний байк', target: 120000, current: 45000, date: '2027-06-30' }
+            ],
+            templates: []
+        };
+
+        let currentTxMode = 'trans';
+        let calendarDate = new Date();
+        let expenseChartInstance = null;
+        let balanceChartInstance = null;
+
+        function saveState() {
+            localStorage.setItem('scrp_finance_state', JSON.stringify(appState));
+        }
+
+        // Перемикач режимів
+        function toggleUserMode() {
+            appState.userMode = appState.userMode === 'full' ? 'novice' : 'full';
+            saveState();
+            updateUserModeUI();
+        }
+
+        function updateUserModeUI() {
+            const btn = document.getElementById('mode-toggle-btn');
+            const aiText = document.getElementById('ai-advice-text');
+            if (appState.userMode === 'novice') {
+                btn.textContent = 'РЕЖИМ ДЛЯ НОВАЧКІВ';
+                aiText.textContent = '[AI ШТАТНИЙ ІНТЕЛЕКТ]: Вітаю у системі! Режим для новачків увімкнено. Вносьте свої витрати через форму на дасборді, а ШІ стежитиме за безпекою вашого бюджету!';
+            } else {
+                btn.textContent = 'ПОВНИЙ ПРОТОКОЛ';
+                aiText.textContent = '[AI СИСТЕМНИЙ АДВІЗОР]: Повний розширений протокол активовано. Доступні всі інструменти аналітики, шаблонів та міжрахункових переказів.';
+            }
+        }
+
+        // Навігація по табах
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-cyber-card', 'border-l-4', 'border-l-cyber-cyan', 'text-cyber-cyan', 'font-bold');
+                btn.classList.add('text-cyber-text');
+            });
+            event.currentTarget.classList.add('bg-cyber-card', 'border-l-4', 'border-l-cyber-cyan', 'text-cyber-cyan', 'font-bold');
+            event.currentTarget.classList.remove('text-cyber-text');
+
+            if (tabId === 'analytics') renderCharts();
+            if (tabId === 'calendar') renderCalendar();
+        }
+
+        // Рендеринг основних даних та селектів
+        function initApp() {
+            updateUserModeUI();
+            populateSelects();
+            renderDashboard();
+            renderTransactionsTable();
+            renderAccountsList();
+            renderCategoriesList();
+            renderDebtsTable();
+            renderBudgetsList();
+            renderGoalsList();
+            renderTemplatesList();
+        }
+
+        function populateSelects() {
+            const accSelects = ['q-account', 'st-account', 'tr-from-acc', 'tr-to-acc', 'debt-account', 'tmpl-account'];
+            accSelects.forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel) {
+                    sel.innerHTML = appState.accounts.map(a => `<option value="${a.id}">${a.name} (${a.balance} UAH)</option>`).join('');
+                }
+            });
+
+            const catSelects = ['q-category', 'st-category', 'budget-category', 'tmpl-category'];
+            catSelects.forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel) {
+                    sel.innerHTML = appState.categories.map(c => `<option value="${c.id}">${c.name} [${c.type.toUpperCase()}]</option>`).join('');
+                }
+            });
+        }
+
+        // Дасборд
+        function renderDashboard() {
+            let totalBal = appState.accounts.reduce((sum, a) => sum + Number(a.balance), 0);
+            let monthlyIncome = 0;
+            let monthlyExpense = 0;
+
+            const now = new Date();
+            appState.transactions.forEach(t => {
+                const tDate = new Date(t.date);
+                if (tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear()) {
+                    if (t.type === 'income') monthlyIncome += Number(t.amount);
+                    if (t.type === 'expense') monthlyExpense += Number(t.amount);
+                }
+            });
+
+            document.getElementById('dash-total-balance').textContent = totalBal.toFixed(2) + ' UAH';
+            document.getElementById('dash-monthly-income').textContent = monthlyIncome.toFixed(2) + ' UAH';
+            document.getElementById('dash-monthly-expense').textContent = monthlyExpense.toFixed(2) + ' UAH';
+            document.getElementById('dash-active-goals').textContent = `${appState.goals.filter(g => g.current < g.target).length} / ${appState.goals.length}`;
+
+            // Останні транзакції
+            const recentContainer = document.getElementById('dash-recent-list');
+            const recent = [...appState.transactions].reverse().slice(0, 5);
+            if (recent.length === 0) {
+                recentContainer.innerHTML = '<div class="text-xs text-cyber-text">Жодних транзакцій у системі не зафіксовано.</div>';
+            } else {
+                recentContainer.innerHTML = recent.map(t => `
+                    <div class="flex justify-between items-center p-2 cyber-box text-xs">
+                        <div>
+                            <div class="font-bold ${t.type === 'income' ? 'text-cyber-green' : t.type === 'expense' ? 'text-cyber-pink' : 'text-cyber-cyan'}">
+                                ${t.type.toUpperCase()} // ${t.amount} UAH
+                            </div>
+                            <div class="text-[10px] text-cyber-text">${t.note || 'Без примітки'} | ${t.location || 'Локація не вказана'}</div>
+                        </div>
+                        <div class="text-[10px] text-cyber-text">${new Date(t.date).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Швидке додавання
+        function handleQuickTransaction(e) {
+            e.preventDefault();
+            const type = document.getElementById('q-type').value;
+            const amount = Number(document.getElementById('q-amount').value);
+            const accountId = document.getElementById('q-account').value;
+            const categoryId = document.getElementById('q-category').value;
+            const location = document.getElementById('q-location').value;
+            const note = document.getElementById('q-note').value;
+
+            executeTransaction({ type, amount, accountId, categoryId, location, note, date: new Date().toISOString() });
+            e.target.reset();
+            initApp();
+        }
+
+        function executeTransaction(tx) {
+            tx.id = 'tx_' + Date.now();
+            appState.transactions.push(tx);
+
+            const acc = appState.accounts.find(a => a.id === tx.accountId);
+            if (acc) {
+                if (tx.type === 'income') acc.balance += tx.amount;
+                if (tx.type === 'expense') acc.balance -= tx.amount;
+            }
+            saveState();
+        }
+
+        // Режим транзакцій / переказів
+        function setTxMode(mode) {
+            currentTxMode = mode;
+            if (mode === 'trans') {
+                document.getElementById('form-standard-tx').classList.remove('hidden');
+                document.getElementById('form-transfer-tx').classList.add('hidden');
+                document.getElementById('mode-trans-btn').classList.add('bg-cyber-card', 'border-cyber-cyan', 'text-cyber-cyan');
+                document.getElementById('mode-transfer-btn').classList.remove('bg-cyber-card', 'border-cyber-cyan', 'text-cyber-cyan');
+            } else {
+                document.getElementById('form-standard-tx').classList.add('hidden');
+                document.getElementById('form-transfer-tx').classList.remove('hidden');
+                document.getElementById('mode-transfer-btn').classList.add('bg-cyber-card', 'border-cyber-cyan', 'text-cyber-cyan');
+                document.getElementById('mode-trans-btn').classList.remove('bg-cyber-card', 'border-cyber-cyan', 'text-cyber-cyan');
+            }
+        }
+
+        function handleStandardTransaction(e) {
+            e.preventDefault();
+            const type = document.getElementById('st-type').value;
+            const amount = Number(document.getElementById('st-amount').value);
+            const accountId = document.getElementById('st-account').value;
+            const categoryId = document.getElementById('st-category').value;
+            const date = document.getElementById('st-date').value || new Date().toISOString();
+            const location = document.getElementById('st-location').value;
+            const tags = document.getElementById('st-tags').value;
+            const note = document.getElementById('st-note').value;
+
+            executeTransaction({ type, amount, accountId, categoryId, date, location, tags, note });
+            e.target.reset();
+            initApp();
+        }
+
+        function handleTransferTransaction(e) {
+            e.preventDefault();
+            const fromAccId = document.getElementById('tr-from-acc').value;
+            const toAccId = document.getElementById('tr-to-acc').value;
+            const amount = Number(document.getElementById('tr-amount').value);
+            const convertedAmount = Number(document.getElementById('tr-converted-amount').value) || amount;
+            const note = document.getElementById('tr-note').value || 'Переказ між рахунками';
+
+            if (fromAccId === toAccId) {
+                alert('Неможливо виконати переказ на той самий рахунок!');
+                return;
+            }
+
+            const fromAcc = appState.accounts.find(a => a.id === fromAccId);
+            const toAcc = appState.accounts.find(a => a.id === toAccId);
+
+            if (fromAcc && toAcc) {
+                fromAcc.balance -= amount;
+                toAcc.balance += convertedAmount;
+
+                appState.transactions.push({
+                    id: 'tx_' + Date.now(),
+                    type: 'transfer',
+                    amount,
+                    accountId: fromAccId,
+                    toAccountId: toAccId,
+                    note,
+                    date: new Date().toISOString()
+                });
+                saveState();
+                e.target.reset();
+                initApp();
+            }
+        }
+
+        function renderTransactionsTable() {
+            const tbody = document.getElementById('transactions-table-body');
+            const search = document.getElementById('tx-search').value.toLowerCase();
+            const filterType = document.getElementById('tx-filter-type').value;
+
+            let filtered = [...appState.transactions].reverse().filter(t => {
+                const matchType = filterType === 'all' || t.type === filterType;
+                const matchSearch = (t.note && t.note.toLowerCase().includes(search)) || (t.location && t.location.toLowerCase().includes(search));
+                return matchType && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-cyber-text">Записи у журналі відсутні.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(t => {
+                const acc = appState.accounts.find(a => a.id === t.accountId);
+                const cat = appState.categories.find(c => c.id === t.categoryId);
+                return `
+                    <tr class="border-b border-cyber-border hover:bg-cyber-card/50">
+                        <td class="p-2">${new Date(t.date).toLocaleString()}</td>
+                        <td class="p-2 font-bold ${t.type === 'income' ? 'text-cyber-green' : t.type === 'expense' ? 'text-cyber-pink' : 'text-cyber-cyan'}">${t.type.toUpperCase()}</td>
+                        <td class="p-2 font-bold">${t.amount} UAH</td>
+                        <td class="p-2">${acc ? acc.name : '—'} / ${cat ? cat.name : 'Переказ'}</td>
+                        <td class="p-2">${t.location || '—'}</td>
+                        <td class="p-2">${t.note || '—'}</td>
+                        <td class="p-2 text-right">
+                            <button onclick="deleteTransaction('${t.id}')" class="text-cyber-pink hover:underline">[ВИДАЛИТИ]</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function deleteTransaction(id) {
+            const idx = appState.transactions.findIndex(t => t.id === id);
+            if (idx !== -1) {
+                const t = appState.transactions[idx];
+                const acc = appState.accounts.find(a => a.id === t.accountId);
+                if (acc) {
+                    if (t.type === 'income') acc.balance -= t.amount;
+                    if (t.type === 'expense') acc.balance += t.amount;
+                }
+                appState.transactions.splice(idx, 1);
+                saveState();
+                initApp();
+            }
+        }
+
+        // Борги та кредити
+        function handleDebtSubmit(e) {
+            e.preventDefault();
+            const type = document.getElementById('debt-type').value;
+            const counterparty = document.getElementById('debt-counterparty').value;
+            const amount = Number(document.getElementById('debt-amount').value);
+            const accountId = document.getElementById('debt-account').value;
+            const deadline = document.getElementById('debt-deadline').value;
+            const note = document.getElementById('debt-note').value;
+
+            appState.debts.push({
+                id: 'debt_' + Date.now(),
+                type,
+                counterparty,
+                amount,
+                accountId,
+                deadline,
+                note,
+                status: 'active'
+            });
+            saveState();
+            e.target.reset();
+            renderDebtsTable();
+        }
+
+        function renderDebtsTable() {
+            const tbody = document.getElementById('debts-table-body');
+            if (appState.debts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-cyber-text">Реєстр боргів порожній.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = appState.debts.map(d => `
+                <tr class="border-b border-cyber-border">
+                    <td class="p-2 font-bold ${d.status === 'active' ? 'text-cyber-yellow' : 'text-cyber-green'}">${d.status === 'active' ? (d.type === 'lent' ? 'МЕНІ ВИННІ' : 'Я ВИНЕН') : 'ПОГАШЕНО'}</td>
+                    <td class="p-2 font-bold text-cyber-cyan">${d.counterparty}</td>
+                    <td class="p-2">${d.amount} UAH</td>
+                    <td class="p-2">${d.deadline || '—'}</td>
+                    <td class="p-2">${d.note || '—'}</td>
+                    <td class="p-2 text-right">
+                        ${d.status === 'active' ? `<button onclick="resolveDebt('${d.id}')" class="text-cyber-green hover:underline">[ПОГАСТИТИ]</button>` : ''}
+                        <button onclick="deleteDebt('${d.id}')" class="text-cyber-pink hover:underline ml-2">[ВИДАЛИТИ]</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function resolveDebt(id) {
+            const d = appState.debts.find(item => item.id === id);
+            if (d) {
+                d.status = 'resolved';
+                saveState();
+                renderDebtsTable();
+            }
+        }
+
+        function deleteDebt(id) {
+            appState.debts = appState.debts.filter(item => item.id !== id);
+            saveState();
+            renderDebtsTable();
+        }
+
+        // Бюджетні ліміти
+        function handleBudgetSubmit(e) {
+            e.preventDefault();
+            const categoryId = document.getElementById('budget-category').value;
+            const limit = Number(document.getElementById('budget-limit').value);
+
+            const existing = appState.budgets.find(b => b.categoryId === categoryId);
+            if (existing) {
+                existing.limit = limit;
+            } else {
+                appState.budgets.push({ id: 'b_' + Date.now(), categoryId, limit });
+            }
+            saveState();
+            renderBudgetsList();
+        }
+
+        function renderBudgetsList() {
+            const container = document.getElementById('budgets-list-container');
+            if (appState.budgets.length === 0) {
+                container.innerHTML = '<div class="text-xs text-cyber-text">Ліміти витрат не встановлено.</div>';
+                return;
+            }
+
+            const now = new Date();
+            container.innerHTML = appState.budgets.map(b => {
+                const cat = appState.categories.find(c => c.id === b.categoryId);
+                const spent = appState.transactions
+                    .filter(t => t.categoryId === b.categoryId && t.type === 'expense' && new Date(t.date).getMonth() === now.getMonth())
+                    .reduce((sum, t) => sum + Number(t.amount), 0);
+                
+                const percent = Math.min(Math.round((spent / b.limit) * 100), 100);
+                const isOver = spent > b.limit;
+
+                return `
+                    <div class="cyber-box p-3 space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="font-bold text-cyber-cyan">${cat ? cat.name : 'Категорія'}</span>
+                            <span class="${isOver ? 'text-cyber-pink font-bold animate-pulse' : 'text-cyber-text'}">${spent} / ${b.limit} UAH (${percent}%)</span>
+                        </div>
+                        <div class="w-full bg-cyber-dark h-2 rounded overflow-hidden border border-cyber-border">
+                            <div class="h-full ${isOver ? 'bg-cyber-pink' : 'bg-cyber-green'}" style="width: ${percent}%"></div>
+                        </div>
+                        ${isOver ? '<div class="text-[10px] text-cyber-pink font-bold">[УВАГА]: Бюджетний ліміт категорії перевищено!</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Кібер-цілі
+        function handleGoalSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('goal-name').value;
+            const target = Number(document.getElementById('goal-target').value);
+            const current = Number(document.getElementById('goal-current').value);
+            const date = document.getElementById('goal-date').value;
+
+            appState.goals.push({ id: 'g_' + Date.now(), name, target, current, date });
+            saveState();
+            e.target.reset();
+            renderGoalsList();
+        }
+
+        function renderGoalsList() {
+            const container = document.getElementById('goals-list-container');
+            if (appState.goals.length === 0) {
+                container.innerHTML = '<div class="text-xs text-cyber-text">Цілі відсутні.</div>';
+                return;
+            }
+
+            container.innerHTML = appState.goals.map(g => {
+                const percent = Math.min(Math.round((g.current / g.target) * 100), 100);
+                return `
+                    <div class="cyber-box p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div class="font-bold text-cyber-cyan text-sm">${g.name}</div>
+                            <button onclick="deleteGoal('${g.id}')" class="text-cyber-pink text-xs">[ВИДАЛИТИ]</button>
+                        </div>
+                        <div class="text-xs text-cyber-text">НАКОПИЧЕНО: <span class="text-cyber-green font-bold">${g.current}</span> / ${g.target} UAH (${percent}%)</div>
+                        <div class="w-full bg-cyber-dark h-2 rounded overflow-hidden border border-cyber-border">
+                            <div class="h-full bg-cyber-cyan" style="width: ${percent}%"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="add_to_${g.id}" placeholder="Додати суму" class="cyber-input flex-1 p-1 text-xs">
+                            <button onclick="contributeGoal('${g.id}')" class="cyber-btn px-3 py-1 text-xs">ВНЕСТИ</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function contributeGoal(id) {
+            const input = document.getElementById(`add_to_${id}`);
+            const val = Number(input.value);
+            if (val > 0) {
+                const g = appState.goals.find(item => item.id === id);
+                if (g) {
+                    g.current += val;
+                    saveState();
+                    renderGoalsList();
+                }
+            }
+        }
+
+        function deleteGoal(id) {
+            appState.goals = appState.goals.filter(g => g.id !== id);
+            saveState();
+            renderGoalsList();
+        }
+
+        // Шаблони платежів
+        function handleTemplateSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('tmpl-name').value;
+            const type = document.getElementById('tmpl-type').value;
+            const amount = Number(document.getElementById('tmpl-amount').value);
+            const accountId = document.getElementById('tmpl-account').value;
+            const categoryId = document.getElementById('tmpl-category').value;
+            const note = document.getElementById('tmpl-note').value;
+
+            appState.templates.push({ id: 'tmpl_' + Date.now(), name, type, amount, accountId, categoryId, note });
+            saveState();
+            e.target.reset();
+            renderTemplatesList();
+        }
+
+        function renderTemplatesList() {
+            const container = document.getElementById('templates-list-container');
+            if (appState.templates.length === 0) {
+                container.innerHTML = '<div class="text-xs text-cyber-text">Шаблони платежів не створені.</div>';
+                return;
+            }
+
+            container.innerHTML = appState.templates.map(tp => `
+                <div class="cyber-box p-4 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-cyber-cyan text-sm">${tp.name}</div>
+                        <div class="text-xs text-cyber-text">${tp.type.toUpperCase()} // ${tp.amount} UAH</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="applyTemplate('${tp.id}')" class="cyber-btn px-3 py-1 text-xs">ВИКОНАТИ</button>
+                        <button onclick="deleteTemplate('${tp.id}')" class="text-cyber-pink text-xs">[X]</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyTemplate(id) {
+            const tp = appState.templates.find(t => t.id === id);
+            if (tp) {
+                executeTransaction({
+                    type: tp.type,
+                    amount: tp.amount,
+                    accountId: tp.accountId,
+                    categoryId: tp.categoryId,
+                    note: tp.name + (tp.note ? ` (${tp.note})` : ''),
+                    date: new Date().toISOString()
+                });
+                initApp();
+                alert(`Шаблон "${tp.name}" успішно виконано!`);
+            }
+        }
+
+        function deleteTemplate(id) {
+            appState.templates = appState.templates.filter(t => t.id !== id);
+            saveState();
+            renderTemplatesList();
+        }
+
+        // Рахунки та категорії
+        function handleAccountSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('acc-name').value;
+            const balance = Number(document.getElementById('acc-balance').value) || 0;
+            appState.accounts.push({ id: 'acc_' + Date.now(), name, balance });
+            saveState();
+            e.target.reset();
+            initApp();
+        }
+
+        function renderAccountsList() {
+            document.getElementById('accounts-list').innerHTML = appState.accounts.map(a => `
+                <div class="flex justify-between items-center p-2 cyber-box text-xs">
+                    <span class="font-bold text-cyber-cyan">${a.name}</span>
+                    <span class="text-cyber-green">${a.balance} UAH</span>
+                </div>
+            `).join('');
+        }
+
+        function handleCategorySubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('cat-name').value;
+            const type = document.getElementById('cat-type').value;
+            appState.categories.push({ id: 'cat_' + Date.now(), name, type });
+            saveState();
+            e.target.reset();
+            initApp();
+        }
+
+        function renderCategoriesList() {
+            document.getElementById('categories-list').innerHTML = appState.categories.map(c => `
+                <div class="flex justify-between items-center p-2 cyber-box text-xs">
+                    <span>${c.name}</span>
+                    <span class="${c.type === 'income' ? 'text-cyber-green' : 'text-cyber-pink'}">${c.type.toUpperCase()}</span>
+                </div>
+            `).join('');
+        }
+
+        // Аналітика (Chart.js)
+        function renderCharts() {
+            // Expense Pie Chart
+            const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+            const catTotals = {};
+            appState.transactions.filter(t => t.type === 'expense').forEach(t => {
+                catTotals[t.categoryId] = (catTotals[t.categoryId] || 0) + Number(t.amount);
+            });
+
+            const labels = Object.keys(catTotals).map(id => {
+                const cat = appState.categories.find(c => c.id === id);
+                return cat ? cat.name : 'Невідомо';
+            });
+            const data = Object.values(catTotals);
+
+            if (expenseChartInstance) expenseChartInstance.destroy();
+            expenseChartInstance = new Chart(expenseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.length ? labels : ['Немає даних'],
+                    datasets: [{
+                        data: data.length ? data : [1],
+                        backgroundColor: ['#00ff66', '#00f0ff', '#ff0055', '#f3e600', '#9333ea']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#c0c5d0', font: { family: 'Share Tech Mono' } } } }
+                }
+            });
+
+            // Balance Line Chart
+            const balanceCtx = document.getElementById('balanceChart').getContext('2d');
+            if (balanceChartInstance) balanceChartInstance.destroy();
+            balanceChartInstance = new Chart(balanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Початок', 'Сьогодні'],
+                    datasets: [{
+                        label: 'Динаміка балансу',
+                        data: [10000, appState.accounts.reduce((s, a) => s + a.balance, 0)],
+                        borderColor: '#00f0ff',
+                        backgroundColor: 'rgba(0, 240, 255, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#c0c5d0', font: { family: 'Share Tech Mono' } } } },
+                    scales: {
+                        x: { ticks: { color: '#c0c5d0' }, grid: { color: '#1f243d' } },
+                        y: { ticks: { color: '#c0c5d0' }, grid: { color: '#1f243d' } }
+                    }
+                }
+            });
+        }
+
+        // Календар транзакцій
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const title = document.getElementById('calendar-month-title');
+            grid.innerHTML = '';
+
+            const year = calendarDate.getFullYear();
+            const month = calendarDate.getMonth();
+            title.textContent = `// КАЛЕНДАР: ${calendarDate.toLocaleString('uk', { month: 'long', year: 'numeric' }).toUpperCase()}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+            for (let i = 0; i < startOffset; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasTx = appState.transactions.some(t => t.date.startsWith(dateStr));
+                
+                grid.innerHTML += `
+                    <div class="cyber-box p-2 text-center text-xs ${hasTx ? 'border-cyber-green bg-cyber-green/10' : ''}">
+                        <div class="font-bold">${day}</div>
+                        ${hasTx ? '<div class="text-[9px] text-cyber-green mt-1">● ОПЕРАЦІЯ</div>' : ''}
+                    </div>
+                `;
+            }
+        }
+
+        function changeMonth(dir) {
+            calendarDate.setMonth(calendarDate.getMonth() + dir);
+            renderCalendar();
+        }
+
+        // Експорт даних
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "scrp_finance_backup.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        // Автозапуск при завантаженні
+        window.onload = initApp;
+    </script>
+</body>
+</html>
